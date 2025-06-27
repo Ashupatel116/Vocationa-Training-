@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Advanced To-Do List with CRUD</title>
+  <style>
+    /* Reset some default */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #121212;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .todo-container {
+      background: #1e1e1e;
+      width: 400px;
+      padding: 30px 30px 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      font-weight: 700;
+      font-size: 28px;
+      text-align: center;
+      color: #fb6e61;
+      letter-spacing: 1.5px;
+      user-select: none;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    #taskInput {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      background: #2b2b2b;
+      color: #fff;
+      transition: box-shadow 0.3s;
+    }
+    #taskInput:focus {
+      box-shadow: 0 0 8px #fb6e61;
+    }
+
+    #addBtn {
+      background: #fb6e61;
+      border: none;
+      color: #121212;
+      font-weight: 700;
+      padding: 0 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-size: 16px;
+    }
+    #addBtn:hover {
+      background: #3c3f41;
+    }
+
+    ul#taskList {
+      list-style: none;
+      padding-left: 0;
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    ul#taskList::-webkit-scrollbar {
+      width: 8px;
+    }
+    ul#taskList::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 4px;
+    }
+
+    li.task-item {
+      background: #2b2b2b;
+      padding: 14px 20px;
+      margin-bottom: 14px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      transition: background 0.3s;
+    }
+    li.task-item:hover {
+      background: #3a3a3a;
+    }
+
+    /* Task text */
+    span.task-text {
+      flex: 1;
+      cursor: pointer;
+      font-size: 17px;
+      color: #ddd;
+      transition: color 0.3s;
+      margin-right: 15px;
+      word-break: break-word;
+    }
+    span.task-text.completed {
+      text-decoration: line-through;
+      color: #888;
+      font-style: italic;
+    }
+
+    /* Buttons container */
+    div.task-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    button.task-btn {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+      color: #fb6e61;
+      user-select: none;
+    }
+    button.task-btn:hover {
+      background: #444;
+    }
+    button.delete-btn {
+      color: #ff4c4c;
+    }
+    button.delete-btn:hover {
+      background: #444;
+    }
+
+    /* Editable input inside li */
+    input.edit-input {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+      background: #444;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="todo-container">
+    <h2>My To-Do List</h2>
+    <div class="input-group">
+      <input type="text" id="taskInput" placeholder="Add a new task..." />
+      <button id="addBtn" title="Add Task">Add</button>
+    </div>
+
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    const taskInput = document.getElementById('taskInput');
+    const addBtn = document.getElementById('addBtn');
+    const taskList = document.getElementById('taskList');
+
+    // Store tasks in array with objects: { id, text, completed }
+    let tasks = [];
+
+    // Helper: Render the tasks
+    function renderTasks() {
+      taskList.innerHTML = '';
+      tasks.forEach(task => {
+        const li = document.createElement('li');
+        li.className = 'task-item';
+
+        // Task text span or editable input
+        const taskTextSpan = document.createElement('span');
+        taskTextSpan.className = 'task-text';
+        taskTextSpan.textContent = task.text;
+        if(task.completed) {
+          taskTextSpan.classList.add('completed');
+        }
+
+        // Toggle completed on click of text
+        taskTextSpan.addEventListener('click', () => {
+          task.completed = !task.completed;
+          renderTasks();
+        });
+
+        // Buttons container
+        const buttonsDiv = document.createElement('div');
+        buttonsDiv.className = 'task-buttons';
+
+        // Edit button
+        const editBtn = document.createElement('button');
+        editBtn.className = 'task-btn edit-btn';
+        editBtn.innerHTML = '✏️';
+        editBtn.title = "Edit task";
+
+        editBtn.addEventListener('click', () => {
+          startEditingTask(task.id);
+        });
+
+        // Delete button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'task-btn delete-btn';
+        deleteBtn.innerHTML = '🗑️';
+        deleteBtn.title = "Delete task";
+
+        deleteBtn.addEventListener('click', () => {
+          deleteTask(task.id);
+        });
+
+        buttonsDiv.appendChild(editBtn);
+        buttonsDiv.appendChild(deleteBtn);
+
+        li.appendChild(taskTextSpan);
+        li.appendChild(buttonsDiv);
+        taskList.appendChild(li);
+      });
+    }
+
+    // Add new task
+    function addTask(text) {
+      if(text.trim() === '') return;
+      tasks.push({
+        id: Date.now(),
+        text: text.trim(),
+        completed: false
+      });
+      renderTasks();
+    }
+
+    // Delete task by id
+    function deleteTask(id) {
+      tasks = tasks.filter(task => task.id !== id);
+      renderTasks();
+    }
+
+    // Start editing a task
+    function startEditingTask(id) {
+      // Find li and replace span with input
+      const liElements = taskList.querySelectorAll('li');
+      liElements.forEach(li => {
+        const span = li.querySelector('span.task-text');
+        const buttons = li.querySelector('div.task-buttons');
+        if(!span || !buttons) return;
+
+        // Find the task id by comparing text or index
+        const task = tasks.find(t => t.text === span.textContent);
+        if(task && task.id === id) {
+          // Replace span with input
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.className = 'edit-input';
+          input.value = task.text;
+
+          // Replace span with input
+          li.replaceChild(input, span);
+
+          // Hide buttons while editing
+          buttons.style.display = 'none';
+
+          // Focus input and set cursor at end
+          input.focus();
+          input.selectionStart = input.selectionEnd = input.value.length;
+
+          // Save edit on Enter or blur
+          function saveEdit() {
+            const newText = input.value.trim();
+            if(newText) {
+              task.text = newText;
+            }
+            renderTasks();
+          }
+
+          input.addEventListener('keyup', (e) => {
+            if(e.key === 'Enter') {
+              saveEdit();
+            }
+            if(e.key === 'Escape') {
+              renderTasks();
+            }
+          });
+
+          input.addEventListener('blur', saveEdit);
+        }
+      });
+    }
+
+    // Add task on button click or Enter key in input
+    addBtn.addEventListener('click', () => {
+      addTask(taskInput.value);
+      taskInput.value = '';
+      taskInput.focus();
+    });
+
+    taskInput.addEventListener('keyup', (e) => {
+      if(e.key === 'Enter') {
+        addTask(taskInput.value);
+        taskInput.value = '';
+      }
+    });
+
+    // Initial render (empty)
+    renderTasks();
+  </script>
+</body>
+</html>
