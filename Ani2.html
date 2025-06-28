@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ani1</title>
+  <style>
+    body {
+      background-color: #000;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .x1, .x2, .x3, .x4, .x5 {
+      width: 100px;
+      height: 30px;
+      position: absolute;
+      top: 900px;
+      animation-iteration-count: infinite;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .x1 {
+      left: 0px;
+      animation-name: move1, color1;
+      animation-duration: 5s, 2s;
+      animation-timing-function: linear;
+    }
+
+    .x2 {
+      left: 150px;
+      animation-name: move2, color2;
+      animation-duration: 6s, 3s;
+      animation-timing-function: linear;
+    }
+
+    .x3 {
+      left: 300px;
+      animation-name: move3, color3;
+      animation-duration: 7s, 2.5s;
+      animation-timing-function: linear;
+    }
+
+    .x4 {
+      left: 450px;
+      animation-name: move4, color4;
+      animation-duration: 4s, 3.2s;
+      animation-timing-function: linear;
+    }
+
+    .x5 {
+      left: 600px;
+      animation-name: move5, color5;
+      animation-duration: 8s, 2.8s;
+      animation-timing-function: linear;
+    }
+
+    /* Movement Animations */
+    @keyframes move1 {
+      0% { top: 900px; transform: rotate(0deg); }
+      100% { top: 100px; transform: rotate(360deg); }
+    }
+
+    @keyframes move2 {
+      0% { top: 900px; transform: rotate(0deg); }
+      100% { top: 100px; transform: rotate(360deg); }
+    }
+
+    @keyframes move3 {
+      0% { top: 900px; transform: rotate(0deg); }
+      100% { top: 100px; transform: rotate(360deg); }
+    }
+
+    @keyframes move4 {
+      0% { top: 900px; transform: rotate(0deg); }
+      100% { top: 100px; transform: rotate(360deg); }
+    }
+
+    @keyframes move5 {
+      0% { top: 900px; transform: rotate(0deg); }
+      100% { top: 100px; transform: rotate(360deg); }
+    }
+
+    /* Stylish Color Changing Animations */
+    @keyframes color1 {
+      0%   { background-color: #ff4e50; }
+      50%  { background-color: #f9d423; }
+      100% { background-color: #ff4e50; }
+    }
+
+    @keyframes color2 {
+      0%   { background-color: #24c6dc; }
+      50%  { background-color: #514a9d; }
+      100% { background-color: #24c6dc; }
+    }
+
+    @keyframes color3 {
+      0%   { background-color: #ff6a00; }
+      50%  { background-color: #ee0979; }
+      100% { background-color: #ff6a00; }
+    }
+
+    @keyframes color4 {
+      0%   { background-color: #43cea2; }
+      50%  { background-color: #185a9d; }
+      100% { background-color: #43cea2; }
+    }
+
+    @keyframes color5 {
+      0%   { background-color: #f7971e; }
+      50%  { background-color: #ffd200; }
+      100% { background-color: #f7971e; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="x1"></div>
+  <div class="x2"></div>
+  <div class="x3"></div>
+  <div class="x4"></div>
+  <div class="x5"></div>
+</body>
+</html>
